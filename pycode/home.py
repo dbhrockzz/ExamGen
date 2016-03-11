@@ -25,7 +25,8 @@ except AttributeError:
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName(_fromUtf8("MainWindow"))
-        MainWindow.resize(799, 545)
+        MainWindow.setFixedSize(799, 545)
+        #MainWindow.resize(MainWindow.sizeHint())
         MainWindow.setWindowOpacity(1.0)
         self.centralwidget = QtGui.QWidget(MainWindow)
         self.centralwidget.setObjectName(_fromUtf8("centralwidget"))
@@ -62,7 +63,7 @@ class Ui_MainWindow(object):
 "    border-right: 3px solid red;\n"
 "}"))
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(_fromUtf8(":/img/resources/ic_fiber_new_black_48dp_2x.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap(_fromUtf8(":/tools/ic_fiber_new_black_48dp_2x.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.new_paper.setIcon(icon)
         self.new_paper.setIconSize(QtCore.QSize(100, 100))
         self.new_paper.setCheckable(True)
@@ -93,7 +94,7 @@ class Ui_MainWindow(object):
 "    border-right: 3px solid red;\n"
 "}"))
         icon1 = QtGui.QIcon()
-        icon1.addPixmap(QtGui.QPixmap(_fromUtf8(":/img/resources/ic_insert_drive_file_black_48dp_2x.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon1.addPixmap(QtGui.QPixmap(_fromUtf8(":/tools/ic_insert_drive_file_black_48dp_2x.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.enter_data.setIcon(icon1)
         self.enter_data.setIconSize(QtCore.QSize(100, 100))
         self.enter_data.setCheckable(True)
@@ -124,7 +125,7 @@ class Ui_MainWindow(object):
 "    border-right: 3px solid red;\n"
 "}"))
         icon2 = QtGui.QIcon()
-        icon2.addPixmap(QtGui.QPixmap(_fromUtf8(":/img/resources/ic_border_color_black_48dp_2x.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon2.addPixmap(QtGui.QPixmap(_fromUtf8(":/tools/ic_border_color_black_48dp_2x.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.edit_data.setIcon(icon2)
         self.edit_data.setIconSize(QtCore.QSize(100, 100))
         self.edit_data.setCheckable(True)
@@ -506,7 +507,7 @@ class Ui_MainWindow(object):
         MainWindow.setCentralWidget(self.centralwidget)
 
         self.retranslateUi(MainWindow)
-        self.stackedWidget.setCurrentIndex(2)
+        self.stackedWidget.setCurrentIndex(1)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
