@@ -1,0 +1,7 @@
+<RCC>
+  <qresource prefix="img">
+    <file>../resources/ic_border_color_black_48dp_2x.png</file>
+    <file>../resources/ic_fiber_new_black_48dp_2x.png</file>
+    <file>../resources/ic_insert_drive_file_black_48dp_2x.png</file>
+  </qresource>
+</RCC>
