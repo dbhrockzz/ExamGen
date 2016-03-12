@@ -9,11 +9,15 @@ def enter_standard(standard):
 	try:
 
 		cur.execute("SELECT DISTINCT(standard) FROM subject_table;")
-		standards = cur.fetchall()[0]
-		if standard in standards:
-			print "Standard Already Present"
+		standards = cur.fetchall()
+		if standards:
+			standards = standards[0]
+			if standard in standards:
+				print "Standard Already Present"
+			else:
+				cur.execute("INSERT INTO subject_table(standard,subjects) VALUES(?,NULL);",(str(standard)))
 		else:
-			cur.execute("INSERT INTO subject_table(standard,subjects) VALUES(?,NULL);",(standard))
+			cur.execute("INSERT INTO subject_table(standard,subjects) VALUES(?,NULL);",(str(standard)))
 		conn.commit()	
 	except:
 		print "Unable to add standard"
@@ -25,11 +29,18 @@ def enter_subject(subject,standard):
 	except:
 		print "Failed to establish connection with database"
 	try:
-		cur.execute("SELECT subjects FROM subject_table;")
+		cur.execute("SELECT subjects FROM subject_table WHERE standard=?;",str(standard))
 		subjects=cur.fetchone()[0]
-		subjects+=(","+subject)
-		cur.execute("UPDATE subject_table SET subjects = ? WHERE standard = ?;",(subjects,standard))
-		cur.execute("INSERT INTO main_table(standard,subject,qmarks) VALUES(?,?,NULL);",(standard,subject))
+		if subjects:
+			if subject not in subjects:
+				subjects+=(","+str(subject))
+			else:
+				print "Subject already there"
+				return
+		else:
+			subjects = str(subject)
+		cur.execute("UPDATE subject_table SET subjects = ? WHERE standard = ?;",(str(subjects),str(standard)))
+		cur.execute("INSERT INTO main_table(standard,subject,qmarks) VALUES(?,?,NULL);",(str(standard),str(subject)))
 		conn.commit()
 	except:
 		print "Unable to add Subject";
@@ -44,7 +55,10 @@ def enter_marks(subject,standard,mark):
 	try:
 		cur.execute("SELECT qmarks FROM main_table WHERE standard=? AND subject=?;",(standard,subject))
 		marks = cur.fetchone()[0]
-		marks+=(","+mark)
+		if marks:
+			marks+=(","+mark)
+		else:
+			marks = str(mark)
 		cur.execute("UPDATE main_table SET qmarks=? WHERE subject=? AND standard=?;",(qmarks,subject,standard))
 		conn.commit()
 	except:
@@ -72,12 +86,14 @@ def edit_subject(sub_old,sub_new,standard):
 		print "Failed to establish connection with database"
 	try:
 		cur.execute("SELECT subjects FROM subject_table WHERE standard=?;",(standard))
-		subjects = cur.fetchone()[0]
-		temp = subjets.split(",")
-		for i in temp:
-			if i==sub_old:
-				i=sub_new
-		cur.execute("UPDATE subject_table SET subject = ? WHERE standard = ?;", (",".join(temp),standard))
+		subjects = str(cur.fetchone()[0])
+		subjects = subjects.split(",")
+        #print temp
+		for i in range(len(subjects)):
+			if subjects[i]==str(sub_old):
+				subjects[i]=str(sub_new)
+		subjects = ",".join(subjects)
+		cur.execute("UPDATE subject_table SET subjects=? WHERE standard=?;", (str(subjects),str(standard)))
 		cur.execute("UPDATE main_table SET subject=? WHERE subject=?;",(sub_new,sub_old))
 		conn.commit()
 	except:
@@ -112,7 +128,7 @@ def  delete_subject(sub,standard):
 			if i!=sub:
 				temp2.append(i)
 		cur.execute("UPDATE subject_table SET subjects = ? WHERE standard= ?;",(",".join(temp2),standard))
-		cur.execute("DELETE FROM main_table WHERE subject = ? AND standard = ?;",(subject,standard))
+		cur.execute("DELETE FROM main_table WHERE subject = ? AND standard = ?;",(sub,standard))
 		conn.commit()
 	except:
 		print "Unable to delete subject"
@@ -125,8 +141,8 @@ def retrieve_standard():
 		print "Failed to establish connection with database"
 	try:
 		cur.execute("SELECT DISTINCT(standard) FROM subject_table;")
-		temp = [i[0] for i in cur.fetchall()]
-		return temp
+		temp = [int(i[0]) for i in cur.fetchall()]
+		return map(str,sorted(temp))
 	except:
 		print "Failed to retrieve standards"
 
