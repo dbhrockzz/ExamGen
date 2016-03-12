@@ -60,9 +60,9 @@ class homeBackend(QtGui.QMainWindow,home.Ui_MainWindow):
         if temp:
             for i in temp:
                 self.standards_ed.addItem(str(i))
-        #self.standards_ed.currentIndexChanged.connect(self.loadSubjectsED)
-        self.add_standard.clicked.connect(self.enter_standard)
-        self.add_subjects.clicked.connect(self.add_subject)
+        self.standards_ed.currentIndexChanged.connect(self.loadSubjectsED)
+        self.add_standard.clicked.connect(self.add_std)
+        self.add_subjects.clicked.connect(self.add_sub)
 
     def loadSubjectsED(self):
         standard = str(self.standards_ed.currentText())
@@ -83,6 +83,10 @@ class homeBackend(QtGui.QMainWindow,home.Ui_MainWindow):
             for i in temp:
                 self.standards_ed2.addItem(str(i))
         self.standards_ed2.currentIndexChanged.connect(self.loadSubjectsED2)
+        self.edit_standard.clicked.connect(self.edit_std)
+        self.edit_subject.clicked.connect(self.edit_sub)
+        self.delete_standard.clicked.connect(self.del_std)
+        self.delete_subject.clicked.connect(self.del_sub)
 
     def loadSubjectsED2(self):
         standard = str(self.standards_ed2.currentText())
@@ -94,17 +98,49 @@ class homeBackend(QtGui.QMainWindow,home.Ui_MainWindow):
                 for i in temp:
                     self.subjects_ed2.addItem(i)
 
-    def enter_standard(self):
+    def add_std(self):
         dialog = dialogs_backend.standard_dialog()
         dialog.show()
         dialog.done(dialog.exec_())
         self.enterDataClicked()
 
-    def add_subject(self):
+    def add_sub(self):
         dialog = dialogs_backend.subject_dialog(str(self.standards_ed.currentText()))
         dialog.show()
         dialog.done(dialog.exec_())
         self.enterDataClicked()
+
+    def edit_std(self):
+        dialog = dialogs_backend.edit_standard_dialog(str(self.standards_ed2.currentText()))
+        dialog.show()
+        dialog.done(dialog.exec_())
+        self.editDataClicked()
+
+    def edit_sub(self):
+        dialog = dialogs_backend.edit_subject_dialog(str(self.standards_ed2.currentText()),str(self.subjects_ed2.currentText()))
+        dialog.show()
+        dialog.done(dialog.exec_())
+        self.editDataClicked()
+
+    def del_std(self):
+        message = "All data of Standard " + str(self.standards_ed2.currentText())+" will be deleted. Are you sure ? "
+        reply = QtGui.QMessageBox.question(self, 'Message',
+            message, QtGui.QMessageBox.Yes |
+            QtGui.QMessageBox.No, QtGui.QMessageBox.No)
+
+        if reply == QtGui.QMessageBox.Yes:
+            dbase.delete_standard(str(self.standards_ed2.currentText()))
+            self.editDataClicked()
+
+    def del_sub(self):
+        message = "All data of Standard " + str(self.standards_ed2.currentText())+" "+ str(self.subjects_ed2.currentText()) +" will be deleted. Are you sure ? "
+        reply = QtGui.QMessageBox.question(self, 'Message',
+            message, QtGui.QMessageBox.Yes |
+            QtGui.QMessageBox.No, QtGui.QMessageBox.No)
+
+        if reply == QtGui.QMessageBox.Yes:
+            dbase.delete_subject(str(self.subjects_ed2.currentText()),str(self.standards_ed2.currentText()))
+            self.editDataClicked()
 
 def main():
     app = QtGui.QApplication(sys.argv)
